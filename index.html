@@ -9,9 +9,9 @@
 
   <body>
 
-    <label>Freeswitch server: </label><input id="freeswitchServer" type="text" value="mserver.com" />
-    <label>Dial Number: </label><input id="dialNumber" type="text" value="87654" />
-    <label>Caller: </label><input id="caller" type="text" value="guga" />
+    <label>Freeswitch server: </label><input id="freeswitchServer" type="text" value="ws://localhost:12004" />
+    <label>Dial Number: </label><input id="dialNumber" type="text" value="10666" />
+    <label>Caller: </label><input id="caller" type="text" value="sdp_webrtc_endpoint" />
   
     </br>
     <input type="button" onclick="hangup()" value="Hangup"/>
@@ -44,9 +44,9 @@ var remoteView = document.getElementById('remote-media');
 var preparePhone = function(){
   var server = document.getElementById("freeswitchServer").value;
   var configuration = {
-         uri: 'sip:tester@'+ server,
-       //  passwords: '1234',
-         ws_servers: 'wss://'+server+':7443',
+         uri: 'sip:tester@localhost',
+         passwords: 'sdp_webrtc_endpoint',
+         ws_servers: server,
        //  ws_servers: 'ws://192.168.1.227:5066',                 
       //   display_name: 'gustavo-1001',
       //   authorization_user: '1001',
@@ -55,7 +55,7 @@ var preparePhone = function(){
       //   no_answer_timeout: null,
          register: false,
          trace_sip: true,
-         stun_servers: "stun:74.125.134.127:19302",
+//         stun_servers: "stun:74.125.134.127:19302",
       //   turn_servers: null,
       //   use_preloaded_route: null,
       //   connection_recovery_min_interval: null,

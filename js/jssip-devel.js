@@ -87,7 +87,7 @@ EventEmitter.prototype = {
   */
   checkEvent: function(event) {
     if (!this.events[event]) {
-      console.error(LOG_PREFIX +'no event named '+ event);
+      console.error(LOG_PREFIX +'no event named '+ JSON.stringify(event));
       return false;
     } else {
       return true;
@@ -725,7 +725,7 @@ Transport.prototype = {
   * @param {event} e
   */
   onError: function(e) {
-    console.warn(LOG_PREFIX +'WebSocket connection error: ' + e);
+    console.warn(LOG_PREFIX +'WebSocket connection error: ' + JSON.stringify(e));
   },
 
   /**
