@@ -26347,6 +26347,17 @@ EventEmitter.prototype.emit = function emit(type) {
   var er, handler, len, args, i, events;
   var doError = (type === 'error');
 
+  var seen = [];
+  console.log("Emit event '" + type + "': " + JSON.stringify(arguments, function(key, val) {
+    if (val != null && typeof val == "object") {
+         if (seen.indexOf(val) >= 0) {
+             return;
+         }
+         seen.push(val);
+     }
+     return val;
+ }, 2) ); //XXX
+
   events = this._events;
   if (events)
     doError = (doError && events.error == null);
