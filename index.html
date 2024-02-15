@@ -1,6 +1,6 @@
 <html>
 <head>
-<script type="text/javascript" src="js/jssip-devel.js"></script>
+<script type="text/javascript" src="js/jssip.js"></script>
 <script type="text/javascript"  src="js/jquery-1.10.2.min.js" ></script>
 
 
@@ -8,12 +8,21 @@
 </head>
 
   <body>
-
-    <label>Freeswitch server: </label><input id="freeswitchServer" type="text" value="ws://localhost:12004" />
+    <label>URL: </label><input id="url" type="text" value="wss://localhost:8089/ws" />
+    <label>Server: </label><input id="server" type="text" value="localhost" />
+    <label>Username: </label><input id="username" type="text" value="ws_webrtc_endpoint" />
+    <label>Password: </label><input id="password" type="password" value="ws_webrtc_endpoint" />
+     <br>
     <label>Dial Number: </label><input id="dialNumber" type="text" value="10666" />
-    <label>Caller: </label><input id="caller" type="text" value="sdp_webrtc_endpoint" />
-  
-    </br>
+<!--
+    <label>URL: </label><input id="url" type="text" value="wss://sip.sipgate.de/" />
+  <label>Server: </label><input id="server" type="text" value="sipgate.de" />
+  <label>Username: </label><input id="username" type="text" value="" />
+  <label>Password: </label><input id="password" type="password" value="" />
+   <br>
+  <label>Dial Number: </label><input id="dialNumber" type="text" value="10000" />
+-->
+  <br>
     <input type="button" onclick="hangup()" value="Hangup"/>
     <input type="button" onclick="makeCall()" value="Call"/>
    
@@ -42,11 +51,19 @@ var remoteView = document.getElementById('remote-media');
 
 
 var preparePhone = function(){
-  var server = document.getElementById("freeswitchServer").value;
+  var server = document.getElementById("server").value;
+  var url = document.getElementById("url").value;
+  var username = document.getElementById("username").value;
+  var password = document.getElementById("password").value;
+
+  var socket = new JsSIP.WebSocketInterface(url);
+
   var configuration = {
-         uri: 'sip:tester@localhost',
-         passwords: 'sdp_webrtc_endpoint',
-         ws_servers: server,
+    sockets  : [ socket ],
+         uri: 'sip:' + username + '@' + server,
+         authorization_user: username,
+         passwords: password,
+         ws_servers: url,
        //  ws_servers: 'ws://192.168.1.227:5066',                 
       //   display_name: 'gustavo-1001',
       //   authorization_user: '1001',
@@ -55,7 +72,7 @@ var preparePhone = function(){
       //   no_answer_timeout: null,
          register: false,
          trace_sip: true,
-//         stun_servers: "stun:74.125.134.127:19302",
+         stun_servers: "stun.l.google.com:19302",
       //   turn_servers: null,
       //   use_preloaded_route: null,
       //   connection_recovery_min_interval: null,
@@ -67,7 +84,7 @@ var preparePhone = function(){
   coolPhone = new JsSIP.UA(configuration);
   coolPhone.on('newRTCSession', function(e) {
         console.log("New Webrtc session created!");
-        currentSession = e.data.session;
+        currentSession = e.session
   });
   
   coolPhone.start();
@@ -77,7 +94,7 @@ var preparePhone = function(){
 
 var callExtension = function(){
   var extension = document.getElementById("dialNumber").value;
-  var server = document.getElementById("freeswitchServer").value;
+  var server = document.getElementById("server").value;
   
   // Register callbacks to desired call events
   var eventHandlers = {
